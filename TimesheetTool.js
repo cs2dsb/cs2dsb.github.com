@@ -23,8 +23,7 @@
   }
 
   function showDialog() {
-    var dialog = $('<div>')
-      .load('http://cs2dsb.github.io/timesheetForm.html')
+    var dialog = $('<div>').text('Test')
       .dialog({
         modal: true,
         height: 300,
