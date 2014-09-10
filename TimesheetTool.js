@@ -22,8 +22,10 @@
     }
   }
 
+  var dialog;
+
   function showDialog() {
-    var dialog = $('<div>').text('Test')
+    dialog = $('<div>').text('Test')
       .dialog({
         modal: true,
         height: 300,
@@ -31,10 +33,13 @@
         buttons: {
           "Go": goPressed
       }});
+
+    $('.ui-dialog-titlebar-close').remove();
   }
 
   function goPressed() {
-    
+    dialog.dialog('close');
+    alert('blah');
   };
 
 })();
