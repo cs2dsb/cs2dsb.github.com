@@ -9,7 +9,7 @@
   function jqueryLoaded() {
     $('<div>')
       .appendTo('body')
-      .load('timesheetForm.html')
+      .load('http://cs2dsb.github.io/timesheetForm.html')
       .dialog({
         title: 'Timesheet form'
       });    
