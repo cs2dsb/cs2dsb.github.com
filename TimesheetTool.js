@@ -42,7 +42,7 @@
     $('<input>')
       .attr('type', 'text')
       .attr('name', 'weekhours')
-      .value(37.5)
+      .val('37.5')
       .appendTo(row);
 
     row.appendTo(form);
