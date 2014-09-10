@@ -29,17 +29,23 @@
 
     var form = $('<form>')
       .attr('id', 'timesheetForm')
+      .css('background-colour', '#ccc')
       .submit(goPressed)
       .appendTo(dialog);
 
+    var row = $('<div>');
+
     $('<label>')
-      .text('Blah:')
-      .appendTo(form);
+      .text('Weekly hours:')
+      .appendTo(row);
 
     $('<input>')
       .attr('type', 'text')
-      .attr('name', 'blah')
-      .appendTo(form);
+      .attr('name', 'weekhours')
+      .value(37.5);
+      .appendTo(row);
+
+    row.appendTo(form);
 
     dialog.dialog({
       modal: true,
