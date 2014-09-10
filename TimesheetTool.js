@@ -25,14 +25,27 @@
   var dialog;
 
   function showDialog() {
-    dialog = $('<div>').text('Test')
-      .dialog({
-        modal: true,
-        height: 300,
-        width: 300,
-        buttons: {
-          "Go": goPressed
-      }});
+    dialog = $('<div>');
+
+    var form = $('<form>')
+      .attr('id', 'timesheetForm')
+      .submit(goPressed)
+      .appendTo(dialog);
+
+    $('<label>')
+      .text('Blah:')
+      .appendTo(form);
+
+    $('<input>')
+      .attr('type', 'text')
+      .attr('name', 'blah')
+      .appendTo(form);
+
+    dialog.dialog({
+      modal: true,
+      height: 300,
+      width: 300
+    });
 
     $('.ui-dialog-titlebar-close').remove();
   }
