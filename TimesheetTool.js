@@ -29,7 +29,7 @@
 
     var form = $('<form>')
       .attr('id', 'timesheetForm')
-      .css('background-colour', '#ccc')
+      .css('background-color', '#ccc')
       .submit(goPressed)
       .appendTo(dialog);
 
@@ -45,6 +45,32 @@
       .val('37.5')
       .appendTo(row);
 
+    row.appendTo(form);
+
+    row = $('<div>');
+    
+    $('<label>')
+      .text('Project:')
+      .appendTo(row);
+
+    $('<input>')
+      .attr('type', 'text')
+      .attr('name', 'project')      
+      .appendTo(row);  
+        
+    row.appendTo(form);
+
+    row = $('<div>');
+    
+    $('<label>')
+      .text('Task:')
+      .appendTo(row);
+
+    $('<input>')
+      .attr('type', 'text')
+      .attr('name', 'task')      
+      .appendTo(row);  
+        
     row.appendTo(form);
 
     dialog.dialog({
