@@ -5,8 +5,13 @@
   script.onreadystatechange = jqueryLoaded;
   script.onload = jqueryLoaded;
   document.body.appendChild(script);
-  
+
   function jqueryLoaded() {
-    console.log($);
+    $('<div>')
+      .appendTo('body')
+      .load('timesheetForm.html')
+      .dialog({
+        title: 'Timesheet form'
+      });    
   }
 })();
