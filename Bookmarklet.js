@@ -1,0 +1,1 @@
+javascript:(function(){ var script = document.createElement("script"); script.type = "text/javascript"; script.src = "http://cs2dsb.github.io/TimesheetTool.js?date=" + new Date().getTime(); document.body.appendChild(script); })()
