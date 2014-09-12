@@ -523,11 +523,11 @@
                 }
               }
             });
-            for (var l in project.tasks) {
-              debugger;
-              if (l.indexOf(taskName.toLowerCase()) !== -1) {
-                return project.tasks[l];
-              }
+          }
+          for (var l in project.tasks) {
+            debugger;
+            if (l.indexOf(taskName.toLowerCase()) !== -1) {
+              return project.tasks[l];
             }
           }
         };
