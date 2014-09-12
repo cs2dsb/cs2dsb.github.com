@@ -573,10 +573,9 @@
             if (totalMins[o.day] === undefined) {
               totalMins[o.day] = 0;
             }
-            tm = totalMins[o.day];
             var diff = minsBetweenIntTimes(o.startTime, o.endTime);
             console.log(o.startTime, o.endTime, diff);
-            tm += minsIntTime(diff) + hoursIntTime(diff) * 60;
+            totalMins[o.day] = totalMins[o.day] + minsIntTime(diff) + hoursIntTime(diff) * 60;
           }
         }
 
