@@ -536,9 +536,13 @@
           var o = getRowAsObject(i);
           o.date = sunday.day(o.day).format('YYYY-MM-DD');
           var project = getProject(o.project);
-          var task = getTask(project, o.task);
-          o.projectCode = project.code;
-          o.taskCode = task.code;
+          if (project) {
+            o.projectCode = project.code;
+            var task = getTask(project, o.task);
+            if (task) {
+              o.taskCode = task.code;
+            }
+          }
           setRowFromObject(o);
         }
       });
