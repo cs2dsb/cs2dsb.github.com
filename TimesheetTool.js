@@ -564,24 +564,23 @@
           setRowFromObject(o);
         }
       });
-    });
   
-    var MSG_CONFIRM = 'Waiting for confirm';
+      var MSG_CONFIRM = 'Waiting for confirm';
 
-    $('#push').click(function(e) {
-      e.preventDefault();
-      $('#push').remove();
+      $('#push').click(function(e) {
+        e.preventDefault();
+        $('#push').remove();
 
-      var tasks = [];
-      for (var i = 0; i < rows.length; i++) {        
-        var o = getRowAsObject(i);
-        if (o.status === MSG_CONFIRM) {
-          tasks.push(o);
+        var tasks = [];
+        for (var i = 0; i < rows.length; i++) {        
+          var o = getRowAsObject(i);
+          if (o.status === MSG_CONFIRM) {
+            tasks.push(o);
+          }
         }
-      }
 
-      console.log(tasks);
+        console.log(tasks);
+      });
     });
-  
   }
 })();
