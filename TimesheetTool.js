@@ -1,6 +1,12 @@
 (function() {
   var PROJ_TIMESHEET = 'Other activities';
   var TASK_TIMESHEET = 'Timesheet recording';
+  var PROJ_CATCHUP = 'Other activities';
+  var TASK_CATCHUP = 'Daily Standup';
+  var TIME_CATCHUP_START = 1005;
+  var TIME_CATCHUP_END = 1015;  
+  var TIME_LUNCH_START = 1200;
+  var TIME_LUNCH_END = 1245;  
 
   var script = document.createElement('script'); 
   script.type = 'text/javascript'; 
@@ -62,7 +68,7 @@
         <input type="text" name="days"> \
       </div> \
       <button id="addTask">Add Task</button> \
-      <table id="time"> \
+      <table id="time" style="border-collapse:collapse; border-spacing:0"> \
         <tr> \
           <td>Day</td> \
           <td>Hours</td> \
@@ -71,12 +77,12 @@
           <td>Notes</td> \
         </tr> \
       </table> \
-      <button id="shatter">Shatter</button> \
+      <button id="shatter" style="display:none">Shatter</button> \
+      <button id="run" style="display:none">Write to timesheet system</button> \
     </div>');
     dialog.dialog({
       modal: true,
-      height: 600,
-      width: 600
+      width: 1200
     });
 
     $('.ui-dialog-titlebar-close').remove();
@@ -102,6 +108,46 @@
       return sum;
     }
 
+    function hoursIntTime(t) {
+      var h = Math.floor(t / 100);
+      return h;
+    }
+
+    function minsIntTime(t) {
+      var h = hoursIntTime(t);
+      var m = t - (h * 100);
+      return m;
+    }
+
+    function hmToIntTime(h, m) {
+      var t = m;
+      t += h * 100;
+      return t;
+    }
+
+    function addMinsToIntTime(t, m) {      
+      var hm = 0;
+      hm += hoursIntTime(t) * 60;
+      hm += minsIntTime(t);
+      hm += m;
+      
+      var h = Math.floor(hm / 60);
+      var m = hm - (h * 60);
+      return hmToIntTime(h, m);
+    }
+
+    function minsBetweenIntTimes(t1, t2) {
+      var t1h = hoursIntTime(t1);
+      var t2h = hoursIntTime(t2);
+      var t1m = minsIntTime(t1);
+      var t2m = minsIntTime(t2);
+  
+      var d = (t2h * 60 + t2m) - (t1h * 60 + t1m);
+      return d;
+    }
+
+    window.x = minsBetweenIntTimes;
+
     function updateWeeklyHours() {
       var s = 0;
       for(var d in days) {
@@ -109,6 +155,10 @@
       }
       s = s.toFixed(2);
       $('#weeklyHours').text('Weekly hours (' + s + ')');
+      if (s >= $('input[name="weekhours"]').val()) {
+        $('#shatter').show();
+        $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask').hide();
+      }
     }
 
     function addBlankTask(day, after) {
@@ -199,6 +249,8 @@
 
       var shards = {};
       var shardCount = Number($('input[name="shards"]').val());
+      var startTime = Number($('input[name="starttime"]').val());
+      var timesheetHours = Number($('input[name="timesheethours"]').val());
 
       for (d in days) {
         var tasks = $('.' + days[d]);
@@ -236,14 +288,143 @@
           }
         });
       }
+      
+      var tasks = [];
       $.each(shards, function(k, v) {
         $.each(v, function(k, v) {
           $.each(v, function(k, v) {
-            console.log(v);
+            tasks.push(v);
           });
         });
       })
+
+      var day = -1;
+      var time;
+      var outputTasks = [];
+      var timesheetMinsPerTask = timesheetHours * 60 / (tasks.length + 5 * 2) //catchup and lunch
+      timesheetMinsPerTask = Math.ceil(timesheetMinsPerTask);
+      
+      while (tasks.length > 0) {
+        var task = tasks[0];
+        if (task.d > day) { 
+          day = task.d;
+          time = startTime;
+        }
+
+        var newTask = {
+          d: day,
+          day: days[day],
+          project: task.project,
+          task: task.task,
+          notes: task.notes,
+          startTime: time,
+          endTime: time
+        };
+        outputTasks.push(newTask);
+
+        var endTime = addMinsToIntTime(time, task.mins);
+        if (time < TIME_CATCHUP_START && endTime >= TIME_CATCHUP_START) {
+          endTime = addMinsToIntTime(TIME_CATCHUP_START, -timesheetMinsPerTask);          
+          outputTasks.push({
+            d: day,
+            day: days[day],
+            project: PROJ_TIMESHEET,
+            task: TASK_TIMESHEET,
+            notes: '',
+            startTime: endTime,
+            endTime: addMinsToIntTime(endTime, timesheetMinsPerTask)
+          });
+          outputTasks.push({
+            d: day,
+            day: days[day],
+            project: PROJ_CATCHUP,
+            task: TASK_CATCHUP,
+            notes: '',
+            startTime: TIME_CATCHUP_START,
+            endTime: TIME_CATCHUP_END
+          });
+          time = addMinsToIntTime(TIME_CATCHUP_END, timesheetMinsPerTask);
+          outputTasks.push({
+            d: day,
+            day: days[day],
+            project: PROJ_TIMESHEET,
+            task: TASK_TIMESHEET,
+            notes: '',
+            startTime: TIME_CATCHUP_END,
+            endTime: time
+          });    
+        } else if (time < TIME_LUNCH_START && endTime > TIME_LUNCH_END) {
+          endTime = addMinsToIntTime(TIME_LUNCH_START, -timesheetMinsPerTask);
+          outputTasks.push({
+            d: day,
+            day: days[day],
+            project: PROJ_TIMESHEET,
+            task: TASK_TIMESHEET,
+            notes: '',
+            startTime: endTime,
+            endTime: addMinsToIntTime(endTime, timesheetMinsPerTask)
+          });         
+          time = addMinsToIntTime(TIME_LUNCH_END, timesheetMinsPerTask);
+          outputTasks.push({
+            d: day,
+            day: days[day],
+            project: PROJ_TIMESHEET,
+            task: TASK_TIMESHEET,
+            notes: '',
+            startTime: TIME_LUNCH_END,
+            endTime: time
+          });    
+        }
+
+        newTask.endTime = endTime;
+        task.mins -= minsBetweenIntTimes(newTask.startTime, newTask.endTime);        
+        if (task.mins <= 0) {
+          time = addMinsToIntTime(endTime, timesheetMinsPerTask)
+          outputTasks.push({
+            d: day,
+            day: days[day],
+            project: PROJ_TIMESHEET,
+            task: TASK_TIMESHEET,
+            notes: '',
+            startTime: endTime,
+            endTime: time
+          });   
+          tasks.splice(0,1);
+        }
+      }
+
+      displayShatteredTasks(outputTasks);
+
+      function displayShatteredTasks(tasks) {
+        $('#time').empty();
+        $('#shatter').remove();
+        var addRow = function(vals, heading) {
+          var head = heading === undefined ? true : heading;
+          if (Object.prototype.toString.call(vals) === '[object Array]') {
+            var row = $('<tr>').appendTo('#time');
+            for (var i in vals) {
+              var col = $('<td>').appendTo(row);
+              if (head) {
+                col.text(vals[i]);
+              } else {
+                $('<input type="text">')
+                  .appendTo(col)
+                  .val(vals[i]);
+              }
+            }
+          } else {
+            addRow([vals.day, vals.startTime, vals.endTime, vals.project, vals.task, vals.notes], false);
+          }
+        }
+        addRow(['Day', 'StartTime', 'EndTime', 'Project', 'Task', 'Notes', 'Status']);
+        $.each(outputTasks, function(i, v) {
+          addRow(v);
+        });
+
+        $('#run').show();
+      };
     });
+  
   }
 
   function goPressed() {
