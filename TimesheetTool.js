@@ -570,7 +570,7 @@
           btn_submit:'Submit'
         };
         console.log(data);
-        callback(null);
+        $.post('time.php', data, callback).fail(callback);
       }
 
       $('#push').click(function(e) {
