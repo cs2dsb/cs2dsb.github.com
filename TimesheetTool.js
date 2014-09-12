@@ -46,7 +46,7 @@
       </div> \
       <div> \
         <label>~ Timesheet recording hours</label> \
-        <input type="text" name="timesheethours" value="2"> \
+        <input type="text" name="timesheethours" value="1.5"> \
       </div> \
       <div> \
         <label>~ Shards</label> \
@@ -306,7 +306,7 @@
       var time;
       var outputTasks = [];
       var timesheetMinsPerTask = timesheetHours * 60 / (tasks.length + 5 * 2) //catchup and lunch
-      timesheetMinsPerTask = Math.ceil(timesheetMinsPerTask);
+      timesheetMinsPerTask = Math.floor(timesheetMinsPerTask + timesheetMinsPerTask * 0.5 * (Math.random() - 0.5));
       
       while (tasks.length > 0) {
         var task = tasks[0];
@@ -573,14 +573,19 @@
         $('#push').remove();
 
         var tasks = [];
+        var totalMins = 0;
+
         for (var i = 0; i < rows.length; i++) {        
           var o = getRowAsObject(i);
           if (o.status === MSG_CONFIRM) {
             tasks.push(o);
+            var diff = minsBetweenIntTimes(o.startTime, o.endTime);
+            totalMins += minsIntTime(diff) + hoursIntTime(diff) * 60;
           }
         }
 
         console.log(tasks);
+        console.log(totalMins);
       });
     });
   }
