@@ -541,7 +541,11 @@
             var task = getTask(project, o.task);
             if (task) {
               o.taskCode = task.code;
+            } else {
+              console.log('Failed to find task', o.task, 'in project', project);
             }
+          } else {
+            console.log('Failed to find project', o.project, 'in projects', projects);
           }
           setRowFromObject(o);
         }
