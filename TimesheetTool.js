@@ -559,6 +559,20 @@
   
       var MSG_CONFIRM = 'Waiting for confirm';
 
+      function postTask(task, callback) {
+        var data = {
+          project: task.projectCode,
+          task: task.taskCode,
+          start: task.startTime,
+          finish: task.endTime,
+          date: task.date,
+          note: task.note,
+          btn_submit:'Submit'
+        };
+        console.log(data);
+        callback(null);
+      }
+
       $('#push').click(function(e) {
         e.preventDefault();
         $('#push').remove();
@@ -582,8 +596,26 @@
           } 
         }
 
-        console.log(tasks);
-        console.log(totalMins);
+        var doOne = function(err) {
+          var curTask = tasks[0];
+          if (err) {
+            console.log('Error posting task. ', err);
+            curTask.retries = curTask.retries || 1;
+            if (curTask.retries > 5) {
+              return console.log('Retried 5 times, failed');
+            }
+          } else {
+            tasks.splice(0,1);
+            curTask = tasks[0];
+          }
+          if (curTask) {
+            postTask(curTask, doOne);
+          } else {
+            console.log('All done');
+          }
+        }
+        doOne('ummm, this needs fixing');
+
       });
     });
   }
