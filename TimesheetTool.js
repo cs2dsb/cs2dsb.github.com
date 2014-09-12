@@ -598,18 +598,10 @@
 
         var doOne = function(err) {
           var curTask = tasks[0];
-          if (err) {
-            console.log('Error posting task. ', err);
-            curTask.retries = curTask.retries || 1;
-            if (curTask.retries > 5) {
-              return console.log('Retried 5 times, failed');
-            }
-          } else {
-            tasks.splice(0,1);
-            curTask = tasks[0];
-          }
+          
           if (curTask) {
             postTask(curTask, doOne);
+            tasks.splice(0,1);
           } else {
             console.log('All done');
           }
