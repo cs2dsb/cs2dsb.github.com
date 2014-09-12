@@ -571,14 +571,15 @@
           if (o.status === MSG_CONFIRM) {
             tasks.push(o);
             if (totalMins[o.day] === undefined) {
-              totalMins[o.day] = 0;
+              totalMins[o.day] = {
+                time: 0,
+                tasks: []
+              };
             }
             var diff = minsBetweenIntTimes(o.startTime, o.endTime);
-            console.log(o.startTime, o.endTime, diff);
-            totalMins[o.day] = totalMins[o.day] + minsIntTime(diff) + hoursIntTime(diff) * 60;
-          } else {
-            alert(o.status);
-          }
+            totalMins[o.day].time = totalMins[o.day].time + minsIntTime(diff) + hoursIntTime(diff) * 60;
+            totalMins[o.day].tasks.push(o.startTime + ', ' + o.endTime + ', ' diff);
+          } 
         }
 
         console.log(tasks);
