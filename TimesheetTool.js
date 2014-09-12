@@ -564,15 +564,19 @@
         $('#push').remove();
 
         var tasks = [];
-        var totalMins = 0;
+        var totalMins = {};
 
         for (var i = 0; i < rows.length; i++) {        
           var o = getRowAsObject(i);
           if (o.status === MSG_CONFIRM) {
             tasks.push(o);
+            if (totalMins[o.day] === undefined) {
+              totalMins[o.day] = 0;
+            }
+            tm = totalMins[o.day];
             var diff = minsBetweenIntTimes(o.startTime, o.endTime);
             console.log(o.startTime, o.endTime, diff);
-            totalMins += minsIntTime(diff) + hoursIntTime(diff) * 60;
+            tm += minsIntTime(diff) + hoursIntTime(diff) * 60;
           }
         }
 
