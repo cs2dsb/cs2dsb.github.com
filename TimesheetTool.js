@@ -368,16 +368,8 @@
             startTime: endTime,
             endTime: addMinsToIntTime(endTime, timesheetMinsPerTask)
           });         
-          time = addMinsToIntTime(TIME_LUNCH_END, timesheetMinsPerTask);
-          outputTasks.push({
-            d: day,
-            day: days[day],
-            project: PROJ_TIMESHEET,
-            task: TASK_TIMESHEET,
-            notes: '',
-            startTime: TIME_LUNCH_END,
-            endTime: time
-          });    
+          debugger;
+          time = addMinsToIntTime(TIME_LUNCH_END, timesheetMinsPerTask);            
         }
 
         newTask.endTime = endTime;
