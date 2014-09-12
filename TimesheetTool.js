@@ -556,15 +556,31 @@
           } else {
             console.log('Failed to find project', o.project, 'in projects', projects);
           }
-          o.status = 'Waiting for confirm';
+          if (o.projectCode && o.taskCode) {
+            o.status = MSG_CONFIRM;
+          } else {
+            o.status = 'Failed to get proj/task code from system';
+          }
           setRowFromObject(o);
         }
       });
     });
+  
+    var MSG_CONFIRM = 'Waiting for confirm';
 
     $('#push').click(function(e) {
       e.preventDefault();
-      
+      $('#push').remove();
+
+      var tasks = [];
+      for (var i = 0; i < rows.length; i++) {        
+        var o = getRowAsObject(i);
+        if (o.status === MSG_CONFIRM) {
+          tasks.push(o);
+        }
+      }
+
+      console.log(tasks);
     });
   
   }
