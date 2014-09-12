@@ -83,7 +83,8 @@
         </tr> \
       </table> \
       <button id="shatter" style="display:none">Shatter</button> \
-      <button id="run" style="display:none">Write to timesheet system</button> \
+      <button id="prepareData" style="display:none">Prepare data</button> \
+      <button id="push" style="display:none">I\'ve checked and it\'s alllllllll correct, push to timesheet system</button> \
     </div>');
     dialog.dialog({
       modal: true,
@@ -424,14 +425,50 @@
           addRow(v);
         });
 
-        $('#run').show();
+        $('#prepareData').show();
       };
 
-      $('#run').click(function(e) {
+      var rows;
+      var projects = {};
+
+      function getProject(name) {
+        name = name.toLowerCase();
+        for (var l in projects) {
+          if (l.indexOf(name) !== -1) {
+            return projects[l];
+          }
+        }
+      };
+
+      function getTask(project, taskName) {
+        if (project.tasks === null) {
+          project.tasks = {};
+          fillTaskDropdown(project.code);
+          $('#task').find('option').each(function(i,e) {
+            e = $(e);
+            var v = e.val();
+            var l = e.text();
+            if (v && l) {
+              project.tasks[l.toLowerCase()] = {
+                code: v,
+                label: l
+              }
+            }
+          });
+        }
+        for (var l in project.tasks) {            
+          if (l.indexOf(taskName.toLowerCase()) !== -1) {
+            return project.tasks[l];
+          }
+        }
+      };
+
+      $('#prepareData').click(function(e) {
         e.preventDefault();
-        $('button').remove();
+        $('#prepareData').remove();
+        $('#push').show();
         var table = $('#time');
-        var rows = table.find('tr');
+        rows = table.find('tr');
         var header = rows.splice(0,1);
         
         $('<td>Date</td><td>Real project</td><td>Real task</td><td>Project Code</td><td>Task Code</td><td>Status</td>').appendTo(header);
@@ -488,7 +525,6 @@
         };
 
 
-        var projects = {};
         $('#project').find('option').each(function(i,e) {
           e = $(e);
           var v = e.val();
@@ -501,38 +537,6 @@
             }
           }
         });
-
-        var getProject = function(name) {
-          name = name.toLowerCase();
-          for (var l in projects) {
-            if (l.indexOf(name) !== -1) {
-              return projects[l];
-            }
-          }
-        };
-
-        var getTask = function(project, taskName) {
-          if (project.tasks === null) {
-            project.tasks = {};
-            fillTaskDropdown(project.code);
-            $('#task').find('option').each(function(i,e) {
-              e = $(e);
-              var v = e.val();
-              var l = e.text();
-              if (v && l) {
-                project.tasks[l.toLowerCase()] = {
-                  code: v,
-                  label: l
-                }
-              }
-            });
-          }
-          for (var l in project.tasks) {            
-            if (l.indexOf(taskName.toLowerCase()) !== -1) {
-              return project.tasks[l];
-            }
-          }
-        };
 
         var sunday = moment().startOf('week')        
         for (var i = 0; i < rows.length; i++) {
@@ -552,9 +556,15 @@
           } else {
             console.log('Failed to find project', o.project, 'in projects', projects);
           }
+          o.status = 'Waiting for confirm';
           setRowFromObject(o);
         }
       });
+    });
+
+    $('#push').click(function(e) {
+      e.preventDefault();
+      
     });
   
   }
