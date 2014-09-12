@@ -463,6 +463,26 @@
         }
       };
 
+      function getRowAsObject(i) {
+        var row = rows.slice(i, i+1);
+        var cells = row.find('td');
+        return {
+          i: i,
+          day: cells.slice(0,1).text(),
+          startTime: cells.slice(1,2).text(),
+          endTime: cells.slice(2,3).text(),
+          project: cells.slice(3,4).text(),
+          task: cells.slice(4,5).text(),
+          notes: cells.slice(5,6).text(),
+          date: cells.slice(6,7).text(),
+          realProject: cells.slice(7,8).text(),
+          realTask: cells.slice(8,9).text(),
+          projectCode: cells.slice(9,10).text(),
+          taskCode: cells.slice(10,11).text(),
+          status: cells.slice(11,12).text()
+        }
+      };
+
       $('#prepareData').click(function(e) {
         e.preventDefault();
         $('#prepareData').remove();
@@ -486,25 +506,6 @@
           }
         });
         
-        var getRowAsObject = function(i) {
-          var row = rows.slice(i, i+1);
-          var cells = row.find('td');
-          return {
-            i: i,
-            day: cells.slice(0,1).text(),
-            startTime: cells.slice(1,2).text(),
-            endTime: cells.slice(2,3).text(),
-            project: cells.slice(3,4).text(),
-            task: cells.slice(4,5).text(),
-            notes: cells.slice(5,6).text(),
-            date: cells.slice(6,7).text(),
-            realProject: cells.slice(7,8).text(),
-            realTask: cells.slice(8,9).text(),
-            projectCode: cells.slice(9,10).text(),
-            taskCode: cells.slice(10,11).text(),
-            status: cells.slice(11,12).text()
-          }
-        };
 
         var setRowFromObject = function(obj) {
           var row = rows.slice(obj.i, obj.i+1);
