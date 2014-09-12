@@ -571,6 +571,7 @@
           if (o.status === MSG_CONFIRM) {
             tasks.push(o);
             var diff = minsBetweenIntTimes(o.startTime, o.endTime);
+            console.log(o.startTime, o.endTime, diff);
             totalMins += minsIntTime(diff) + hoursIntTime(diff) * 60;
           }
         }
