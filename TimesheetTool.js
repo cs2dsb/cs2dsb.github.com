@@ -357,7 +357,7 @@
             startTime: TIME_CATCHUP_END,
             endTime: time
           });    
-        } else if (time < TIME_LUNCH_START && endTime > TIME_LUNCH_END) {
+        } else if (time < TIME_LUNCH_START && endTime >= TIME_LUNCH_START) {
           endTime = addMinsToIntTime(TIME_LUNCH_START, -timesheetMinsPerTask);
           outputTasks.push({
             d: day,
@@ -368,7 +368,6 @@
             startTime: endTime,
             endTime: addMinsToIntTime(endTime, timesheetMinsPerTask)
           });         
-          debugger;
           time = addMinsToIntTime(TIME_LUNCH_END, timesheetMinsPerTask);            
         }
 
