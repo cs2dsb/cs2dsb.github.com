@@ -22,6 +22,11 @@
   script2.onload  = jqueryLoaded;
   document.body.appendChild(script2);
 
+  var script3 = document.createElement('script');
+  script3.type = 'text/javascript';
+  script3.src = 'http://cs2dsb.github.io/moment.js';
+  document.body.appendChild(script3);
+
   var load = 2;
 
   function jqueryLoaded() {
@@ -146,8 +151,6 @@
       return d;
     }
 
-    window.x = minsBetweenIntTimes;
-
     function updateWeeklyHours() {
       var s = 0;
       for(var d in days) {
@@ -155,7 +158,7 @@
       }
       s = s.toFixed(2);
       $('#weeklyHours').text('Weekly hours (' + s + ')');
-      if (s >= $('input[name="weekhours"]').val()) {
+      if (s >= Number($('input[name="weekhours"]').val())) {
         $('#shatter').show();
         $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask').hide();
       }
@@ -416,20 +419,130 @@
             addRow([vals.day, vals.startTime, vals.endTime, vals.project, vals.task, vals.notes], false);
           }
         }
-        addRow(['Day', 'StartTime', 'EndTime', 'Project', 'Task', 'Notes', 'Status']);
+        addRow(['Day', 'StartTime', 'EndTime', 'Project', 'Task', 'Notes']);
         $.each(outputTasks, function(i, v) {
           addRow(v);
         });
 
         $('#run').show();
       };
+
+      $('#run').click(function(e) {
+        e.preventDefault();
+        $('button').remove();
+        var table = $('#time');
+        var rows = table.find('tr');
+        var header = rows.splice(0,1);
+        
+        $('<td>Date</td><td>Project Code</td><td>Task Code</td><td>Status</td>').appendTo(header);
+        rows.each(function(i,e) {
+          $('<td></td><td></td><td></td><td>Preparing data</td>').appendTo(e);
+        });
+          
+        var cells = rows.find('td');
+        cells.each(function(i, e) {
+          e = $(e);
+          e.css('border', '1px solid black');
+          var inp = e.find('input');
+          if (inp.length > 0) {
+            e.text(inp.val());
+          }
+        });
+        
+        var getRowAsObject = function(i) {
+          var row = rows.slice(i, i+1);
+          var cells = row.find('td');
+          return {
+            i: i,
+            day: cells.slice(0,1).text(),
+            startTime: cells.slice(1,2).text(),
+            endTime: cells.slice(2,3).text(),
+            project: cells.slice(3,4).text(),
+            task: cells.slice(4,5).text(),
+            notes: cells.slice(5,6).text(),
+            date: cells.slice(6,7).text(),
+            projectCode: cells.slice(7,8).text(),
+            taskCode: cells.slice(8,9).text(),
+            status: cells.slice(9,10).text()
+          }
+        };
+
+        var setRowFromObject = function(obj) {
+          var row = rows.slice(obj.i, obj.i+1);
+          var cells = row.find('td');
+        
+          cells.slice(0,1).text(obj.day);
+          cells.slice(1,2).text(obj.startTime);
+          cells.slice(2,3).text(obj.endTime);
+          cells.slice(3,4).text(obj.project);
+          cells.slice(4,5).text(obj.task);
+          cells.slice(5,6).text(obj.notes);
+          cells.slice(6,7).text(obj.date);
+          cells.slice(7,8).text(obj.projectCode);
+          cells.slice(8,9).text(obj.taskCode);
+          cells.slice(9,10).text(obj.status);
+        };
+
+
+        var projects = {};
+        $('#project').find('option').each(function(i,e) {
+          e = $(e);
+          var v = e.val();
+          var l = e.text();
+          if (v && l) {
+            projects[l.toLowerCase()] = {
+              code: v,
+              label: l,
+              tasks: null
+            }
+          }
+        });
+
+        var getProject = function(name) {
+          name = name.toLowerCase();
+          for (var l in projects) {
+            if (l.indexOf(name) !== -1) {
+              return projects[l];
+            }
+          }
+        };
+
+        var getTask = function(project, taskName) {
+          if (project.tasks === null) {
+            project.tasks = {};
+            fillTaskDropdown(project.code)
+            debugger;
+            $('#task').find('option').each(function(i,e) {
+              e = $(e);
+              var v = e.val();
+              var l = e.text();
+              if (v && l) {
+                project.tasks[l.toLowerCase()] = {
+                  code: v,
+                  label: l
+                }
+              }
+            });
+            for (var l in project.tasks) {
+              if (l.indexOf(taskName.toLowerCase()) !== -1) {
+                return project.tasks[l];
+              }
+            }
+          }
+        };
+
+        var sunday = moment().startOf('week')        
+        for (var i in rows) {
+          var o = getRowAsObject(i);
+          o.date = sunday.day(o.day).format('YYYY-MM-DD');
+          var project = getProject(o.project);
+          var task = getTask(project, o.task);
+          o.projectCode = project.code;
+          o.taskCode = task.code;
+          setRowFromObject(o);
+        }
+      });
     });
   
   }
-
-  function goPressed() {
-    dialog.dialog('close');
-    alert('blah');
-  };
-
 })();
