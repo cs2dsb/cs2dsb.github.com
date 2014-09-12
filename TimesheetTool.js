@@ -576,6 +576,8 @@
             var diff = minsBetweenIntTimes(o.startTime, o.endTime);
             console.log(o.startTime, o.endTime, diff);
             totalMins[o.day] = totalMins[o.day] + minsIntTime(diff) + hoursIntTime(diff) * 60;
+          } else {
+            alert(o.status);
           }
         }
 
