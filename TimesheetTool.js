@@ -434,9 +434,9 @@
         var rows = table.find('tr');
         var header = rows.splice(0,1);
         
-        $('<td>Date</td><td>Project Code</td><td>Task Code</td><td>Status</td>').appendTo(header);
+        $('<td>Date</td><td>Real project</td><td>Real task</td><td>Project Code</td><td>Task Code</td><td>Status</td>').appendTo(header);
         rows.each(function(i,e) {
-          $('<td></td><td></td><td></td><td>Preparing data</td>').appendTo(e);
+          $('<td></td><td></td><td></td><td></td><td></td><td>Preparing data</td>').appendTo(e);
         });
           
         var cells = rows.find('td');
@@ -461,9 +461,11 @@
             task: cells.slice(4,5).text(),
             notes: cells.slice(5,6).text(),
             date: cells.slice(6,7).text(),
-            projectCode: cells.slice(7,8).text(),
-            taskCode: cells.slice(8,9).text(),
-            status: cells.slice(9,10).text()
+            realProject: cells.slice(7,8).text(),
+            realTask: cells.slice(8,9).text(),
+            projectCode: cells.slice(9,10).text(),
+            taskCode: cells.slice(10,11).text(),
+            status: cells.slice(11,12).text()
           }
         };
 
@@ -478,9 +480,11 @@
           cells.slice(4,5).text(obj.task);
           cells.slice(5,6).text(obj.notes);
           cells.slice(6,7).text(obj.date);
-          cells.slice(7,8).text(obj.projectCode);
-          cells.slice(8,9).text(obj.taskCode);
-          cells.slice(9,10).text(obj.status);
+          cells.slice(7,8).text(obj.realProject);
+          cells.slice(8,9).text(obj.realTask);
+          cells.slice(9,10).text(obj.projectCode);
+          cells.slice(10,11).text(obj.taskCode);
+          cells.slice(11,12).text(obj.status);
         };
 
 
@@ -510,8 +514,7 @@
         var getTask = function(project, taskName) {
           if (project.tasks === null) {
             project.tasks = {};
-            fillTaskDropdown(project.code)
-            debugger;
+            fillTaskDropdown(project.code);
             $('#task').find('option').each(function(i,e) {
               e = $(e);
               var v = e.val();
@@ -524,8 +527,7 @@
               }
             });
           }
-          for (var l in project.tasks) {
-            debugger;
+          for (var l in project.tasks) {            
             if (l.indexOf(taskName.toLowerCase()) !== -1) {
               return project.tasks[l];
             }
@@ -539,9 +541,11 @@
           var project = getProject(o.project);
           if (project) {
             o.projectCode = project.code;
+            o.realProject = project.label;
             var task = getTask(project, o.task);
             if (task) {
               o.taskCode = task.code;
+              o.realTask = task.label;
             } else {
               console.log('Failed to find task', o.task, 'in project', project);
             }
