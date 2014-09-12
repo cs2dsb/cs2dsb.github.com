@@ -524,6 +524,7 @@
               }
             });
             for (var l in project.tasks) {
+              debugger;
               if (l.indexOf(taskName.toLowerCase()) !== -1) {
                 return project.tasks[l];
               }
@@ -532,7 +533,7 @@
         };
 
         var sunday = moment().startOf('week')        
-        for (var i in rows) {
+        for (var i = 0; i < rows.length; i++) {
           var o = getRowAsObject(i);
           o.date = sunday.day(o.day).format('YYYY-MM-DD');
           var project = getProject(o.project);
