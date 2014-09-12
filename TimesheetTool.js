@@ -578,7 +578,7 @@
             }
             var diff = minsBetweenIntTimes(o.startTime, o.endTime);
             totalMins[o.day].time = totalMins[o.day].time + minsIntTime(diff) + hoursIntTime(diff) * 60;
-            totalMins[o.day].tasks.push(o.startTime + ', ' + o.endTime + ', ' diff);
+            totalMins[o.day].tasks.push(o.startTime + ', ' + o.endTime + ', ' + diff);
           } 
         }
 
