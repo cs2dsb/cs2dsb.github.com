@@ -289,9 +289,19 @@
           var ts = time / shardCount;
           
           if (shards[d] === undefined) { shards[d] = []; }
-          var s = shards[d];
           
+          var s = shards[d];          
           var i = 0;
+          
+          if (time < 60) {
+            i = shardCount;
+            for (var k = 0; k < i; k++) {
+              if (s[k] === undefined) { s[k] = []; }
+              s[k].push({placeholder: true});
+            }
+            ts = time;
+          }
+
           while (time > 0) {
             var jitter = Math.random() * (ts/10 - ts/20);
             var jittered = ts + jitter;
@@ -317,7 +327,9 @@
       $.each(shards, function(k, v) {
         $.each(v, function(k, v) {
           $.each(v, function(k, v) {
-            tasks.push(v);
+            if (!v.placeholder) {
+              tasks.push(v);
+            }
           });
         });
       })
