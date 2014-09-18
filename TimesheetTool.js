@@ -82,7 +82,7 @@
           <td>Notes</td> \
         </tr> \
       </table> \
-      <button id="proceed">Proceed</button> \
+      <button id="proceed" style="display:none;">Proceed</button> \
       <table id="recents" style="display:none;border-collapse:collapse; border-spacing:0"> \
       </table> \
       <button id="shatter" style="display:none">Shatter</button> \
@@ -160,7 +160,7 @@
 
     function showShatter() {
       $('#shatter').show();
-      $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask,#proceed').hide();
+      $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask,#proceed,#recents').hide();
     }
 
     $('#proceed').click(function(e) {
@@ -221,7 +221,8 @@
       $('<a>')
         .text('again')
         .attr('href', '#')
-        .click(function() {
+        .click(function(e) {
+          e.preventDefault();
           $('input[name="project"]').val(project);
           $('input[name="task"]').val(task);
           $('input[name="days"]').val(hours/7.5);
@@ -295,6 +296,7 @@
             var jitter = Math.random() * (ts/10 - ts/20);
             var jittered = ts + jitter;
             var mins = Math.floor(jittered);
+            mins = Math.max(1, mins);
             time -= mins;
 
             if (s[i] === undefined) { s[i] = []; }
@@ -674,7 +676,8 @@
         $('<a>')
           .text('again')
           .attr('href', '#')
-          .click(function() {
+          .click(function(e) {
+            e.preventDefault();
             $('input[name="project"]').val(r.project);
             $('input[name="task"]').val(r.task);
             $('input[name="days"]').val(r.days);
