@@ -590,7 +590,11 @@
           btn_submit:'Submit'
         };
         console.log(data);
-        $.post('time.php', data, callback).fail(callback);
+        $.post('time.php', data, function() {
+          callback(null, task);
+        }).fail(function() {
+          callback('Ajax error', task);
+        });
       }
 
       $('#push').click(function(e) {
