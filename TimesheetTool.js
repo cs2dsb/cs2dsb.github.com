@@ -73,6 +73,8 @@
         <input type="text" name="days"> \
       </div> \
       <button id="addTask">Add Task</button> \
+      <table id="recents" style="display:none;border-collapse:collapse; border-spacing:0"> \
+      </table> \
       <table id="time" style="border-collapse:collapse; border-spacing:0"> \
         <tr> \
           <td>Day</td> \
@@ -83,8 +85,6 @@
         </tr> \
       </table> \
       <button id="proceed" style="display:none;">Proceed</button> \
-      <table id="recents" style="display:none;border-collapse:collapse; border-spacing:0"> \
-      </table> \
       <button id="shatter" style="display:none">Shatter</button> \
       <button id="prepareData" style="display:none">Prepare data</button> \
       <button id="push" style="display:none">I\'ve checked and it\'s alllllllll correct, push to timesheet system</button> \
