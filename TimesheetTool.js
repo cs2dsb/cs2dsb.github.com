@@ -98,7 +98,6 @@
     dialog.css('position', 'absolute');
     dialog.css('width', '1200px');
     dialog.css('top', '0px');
-    $('body').css('height', '5000px');
 
     var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
