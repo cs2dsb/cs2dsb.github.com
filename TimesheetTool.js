@@ -91,10 +91,13 @@
     </div>');
     dialog.dialog({
       modal: true,
-      width: 1200
+      width: 1200,
     });
 
     $('.ui-dialog-titlebar-close').remove();
+    dialog.css('position', 'fixed');
+    dialog.css('width', '1200px');
+    dialog.css('top', '400px');
 
     var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
