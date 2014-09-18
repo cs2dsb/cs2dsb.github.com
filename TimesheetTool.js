@@ -235,12 +235,15 @@
 
       var project = $('input[name="project"]').val();
       var task = $('input[name="task"]').val();
-      var hours = $('input[name="days"]').val() * 7.5;
+      var days = $('input[name="days"]').val();
+      var hours = days * 7.5;
       var notes = $('input[name="notes"]').val();
       
       if (project === '' || task === '' || hours === 0) {
         return;
       }
+
+      addRecent(days, project, task, notes);
 
       while (hours > 0) {
         console.log(hours);
@@ -256,7 +259,6 @@
 
         h = h.toFixed(2);
         addTask(day, h, project, task, notes);
-        addRecent(h, project, task, notes);
         updateWeeklyHours();
       }
     });
@@ -644,11 +646,11 @@
       t.empty();
       $.each(recents, function(i, r) {
         var row = $('<tr>')
-          .prependTo(t);
+          .appendTo(t);
         
         $('<td>')
-          .addClass('hours')
-          .text(r.hours)
+          .addClass('days')
+          .text(r.days)
           .appendTo(row);
 
         $('<td>')
@@ -672,7 +674,7 @@
           .click(function() {
             $('input[name="project"]').val(r.project);
             $('input[name="task"]').val(r.task);
-            $('input[name="days"]').val(r.hours/7.5);
+            $('input[name="days"]').val(r.days);
             $('input[name="notes"]').val(r.notes);
           })
           .appendTo(
@@ -682,7 +684,7 @@
       });
       if (recents.length > 0) {
         t.show();
-        $('<td>Hours</td> \
+        $('<td>Days</td> \
           <td>Project</td> \
           <td>Task</td> \
           <td>Notes</td>').prependTo(t);
@@ -692,7 +694,7 @@
     };
     loadRecents();     
 
-    function addRecent(h, project, task, notes) {
+    function addRecent(days, project, task, notes) {
       var recents = localStorage.getItem('recents');
       if (recents) {
         recents = JSON.parse(recents);
@@ -701,7 +703,7 @@
       }
 
       var task = {
-        hours: h,
+        days: days,
         project: project,
         task: task,
         notes: notes
