@@ -83,6 +83,8 @@
         </tr> \
       </table> \
       <button id="proceed">Proceed</button> \
+      <table id="recents" style="display:none;border-collapse:collapse; border-spacing:0"> \
+      </table> \
       <button id="shatter" style="display:none">Shatter</button> \
       <button id="prepareData" style="display:none">Prepare data</button> \
       <button id="push" style="display:none">I\'ve checked and it\'s alllllllll correct, push to timesheet system</button> \
@@ -254,6 +256,7 @@
 
         h = h.toFixed(2);
         addTask(day, h, project, task, notes);
+        addRecent(h, project, task, notes);
         updateWeeklyHours();
       }
     });
@@ -606,19 +609,113 @@
           } 
         }
 
-        var doOne = function(err) {
+        var doOne = function(err, lastTask) {
           var curTask = tasks[0];
+          
+          if (err && lastTask) {
+            console.log('Error posting task: %s', err);
+            lastTask.retries = (lastTask.retries || 0) + 1;
+            if (lastTask.retries < 5) {
+              curTask = lastTask;
+            } else {
+              console.log('Retries expired!');
+              tasks.splice(0,1);
+            }
+          } else {
+            tasks.splice(0,1);
+          }
           
           if (curTask) {
             postTask(curTask, doOne);
-            tasks.splice(0,1);
           } else {
             console.log('All done');
           }
         }
-        doOne('ummm, this needs fixing');
-
+        doOne();
       });
+
     });
+      
+    function loadRecents() {
+      var recents = localStorage.getItem('recents');
+      if (!recents) { return; }
+      recents = JSON.parse(recents);      
+      var t = $('#recents');
+      t.empty();
+      $.each(recents, function(i, r) {
+        var row = $('<tr>')
+          .prependTo(t);
+        
+        $('<td>')
+          .addClass('hours')
+          .text(r.hours)
+          .appendTo(row);
+
+        $('<td>')
+          .addClass('project')
+          .text(r.project)
+          .appendTo(row);
+
+        $('<td>')
+          .addClass('task')
+          .text(r.task)
+          .appendTo(row);
+
+        $('<td>')
+          .addClass('notes')
+          .text(r.notes)
+          .appendTo(row);
+
+        $('<a>')
+          .text('again')
+          .attr('href', '#')
+          .click(function() {
+            $('input[name="project"]').val(r.project);
+            $('input[name="task"]').val(r.task);
+            $('input[name="days"]').val(r.hours/7.5);
+            $('input[name="notes"]').val(r.notes);
+          })
+          .appendTo(
+          $('<td>')
+            .addClass('again')        
+            .appendTo(row));
+      });
+      if (recents.length > 0) {
+        t.show();
+        $('<td>Hours</td> \
+          <td>Project</td> \
+          <td>Task</td> \
+          <td>Notes</td>').prependTo(t);
+      } else {
+        t.hide();
+      }
+    };
+    loadRecents();     
+
+    function addRecent(h, project, task, notes) {
+      var recents = localStorage.getItem('recents');
+      if (recents) {
+        recents = JSON.parse(recents);
+      } else {
+        recents = [];
+      }
+
+      var task = {
+        hours: h,
+        project: project,
+        task: task,
+        notes: notes
+      };
+      for (var i = recents.length - 1; i >= 0; i--) {
+        var r = recents[i];
+        if (r.project === task.project && r.task === task.task && r.notes === task.notes) {
+          recents.splice(i, 1);
+        }
+      }
+      recents.unshift(task);
+
+      localStorage.setItem('recents', JSON.stringify(recents));
+      loadRecents();
+    };
   }
 })();
