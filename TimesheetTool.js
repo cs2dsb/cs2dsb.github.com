@@ -247,12 +247,12 @@
 
       while (hours > 0) {
         console.log(hours);
-        var currentDayTotal = sumDay();
+        var currentDayTotal = sumDay().toFixed(2);
         if (currentDayTotal >= 7.5) {
           day++;
         }
         if (day >= days.length) { return; }
-        currentDayTotal = sumDay();
+        currentDayTotal = sumDay().toFixed(2);
         var max = 7.5 - currentDayTotal;
         var h = Math.min(hours, max);
         hours -= max;
