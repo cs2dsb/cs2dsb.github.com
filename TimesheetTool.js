@@ -82,6 +82,7 @@
           <td>Notes</td> \
         </tr> \
       </table> \
+      <button id="proceed">Proceed</button> \
       <button id="shatter" style="display:none">Shatter</button> \
       <button id="prepareData" style="display:none">Prepare data</button> \
       <button id="push" style="display:none">I\'ve checked and it\'s alllllllll correct, push to timesheet system</button> \
@@ -152,6 +153,16 @@
       return d;
     }
 
+    function showShatter() {
+      $('#shatter').show();
+      $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask,#proceed').hide();
+    }
+
+    $('#proceed').click(function(e) {
+      e.preventDefault();
+      showShatter();
+    })
+
     function updateWeeklyHours() {
       var s = 0;
       for(var d in days) {
@@ -160,8 +171,7 @@
       s = s.toFixed(2);
       $('#weeklyHours').text('Weekly hours (' + s + ')');
       if (s >= Number($('input[name="weekhours"]').val())) {
-        $('#shatter').show();
-        $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask').hide();
+        showShatter();
       }
     }
 
@@ -566,7 +576,7 @@
           start: task.startTime,
           finish: task.endTime,
           date: task.date,
-          note: task.note,
+          note: task.notes,
           btn_submit:'Submit'
         };
         console.log(data);
