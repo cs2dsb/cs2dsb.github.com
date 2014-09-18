@@ -676,7 +676,6 @@
             $('input[name="task"]').val(r.task);
             $('input[name="days"]').val(r.days);
             $('input[name="notes"]').val(r.notes);
-            $('#addTask').click();
           })
           .appendTo(
           $('<td>')
