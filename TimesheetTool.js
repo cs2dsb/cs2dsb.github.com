@@ -235,15 +235,15 @@
 
       var project = $('input[name="project"]').val();
       var task = $('input[name="task"]').val();
-      var days = $('input[name="days"]').val();
-      var hours = days * 7.5;
+      var ndays = $('input[name="days"]').val();
+      var hours = ndays * 7.5;
       var notes = $('input[name="notes"]').val();
       
       if (project === '' || task === '' || hours === 0) {
         return;
       }
 
-      addRecent(days, project, task, notes);
+      addRecent(ndays, project, task, notes);
 
       while (hours > 0) {
         console.log(hours);
@@ -676,6 +676,7 @@
             $('input[name="task"]').val(r.task);
             $('input[name="days"]').val(r.days);
             $('input[name="notes"]').val(r.notes);
+            $('#addTask').click();
           })
           .appendTo(
           $('<td>')
