@@ -88,6 +88,9 @@
       <button id="shatter" style="display:none">Shatter</button> \
       <button id="prepareData" style="display:none">Prepare data</button> \
       <button id="push" style="display:none">I\'ve checked and it\'s alllllllll correct, push to timesheet system</button> \
+      <div id="notes" style="position:absolute; right:0; top: 0;"> \
+        <textarea rows="10" cols="70"></textarea> \
+      </div> \
     </div>');
     dialog.dialog({
       modal: true,
@@ -160,7 +163,7 @@
 
     function showShatter() {
       $('#shatter').show();
-      $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask,#proceed,#recents').hide();
+      $('input[name="project"],input[name="task"],input[name="starttime"],input[name="shards"],input[name="timesheethours"],input[name="weekhours"],input[name="notes"],input[name="days"],label,#addTask,#proceed,#recents,#notes textarea').hide();
     }
 
     $('#proceed').click(function(e) {
@@ -741,5 +744,12 @@
       localStorage.setItem('recents', JSON.stringify(recents));
       loadRecents();
     };
+
+    $('#notes textarea').bind('input propertychange', function() {
+      var text = $('#notes textarea').val();
+      localStorage.setItem('notes', text);      
+    });
+
+    $('#notes textarea').val(localStorage.getItem('notes'));
   }
 })();
